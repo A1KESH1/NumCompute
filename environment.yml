@@ -1,0 +1,31 @@
+name: numcompute
+channels:
+  - defaults
+dependencies:
+  - blas=1.0
+  - bzip2=1.0.8
+  - ca-certificates=2026.8.13
+  - libcxx=22.1.2
+  - libexpat=2.8.4
+  - libffi=3.4.8
+  - libgfortran=15.2.0
+  - libgfortran5=15.2.0
+  - libopenblas=0.3.31
+  - libzlib=1.3.2
+  - llvm-openmp=22.1.2
+  - ncurses=6.6
+  - numpy=2.5.2
+  - numpy-base=2.5.2
+  - openssl=3.5.8
+  - packaging=26.3
+  - pip=26.2.1
+  - python=3.12.14
+  - readline=8.3
+  - setuptools=83.0.0
+  - sqlite=3.53.4
+  - tk=8.6.15
+  - tzdata=2026c
+  - wheel=0.47.0
+  - xz=5.8.2
+  - zlib=1.3.2
+prefix: /opt/miniconda3/envs/numcompute
