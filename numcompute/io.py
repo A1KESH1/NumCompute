@@ -7,8 +7,7 @@ def read_csv(
     missing_values=None,
     filling_values=np.nan,
     dtype=None,
-    skip_header=0,
-    names=None
+    skip_header=0
 ):
     if missing_values is None:
         missing_values = ["", "NA", "N/A", "null", "None"]
@@ -21,9 +20,7 @@ def read_csv(
             filling_values=filling_values,
             dtype=dtype,
             ndmin=2,
-            skip_header=skip_header,
-            names=names,
-            encoding="utf-8"
+            skip_header=skip_header
         )
     except (OSError, ValueError) as e:
         raise ValueError(
@@ -42,7 +39,6 @@ def read_csv_chunks(
     missing_values=None,
     filling_values=np.nan,
     dtype=None,
-    names=None,
     skip_header=0
 ):
     if chunk_size is None or chunk_size <= 0:
@@ -75,9 +71,7 @@ def read_csv_chunks(
                 missing_values=missing_values,
                 filling_values=filling_values,
                 dtype=dtype,
-                ndmin=2,
-                names=names,
-                encoding="utf-8"
+                ndmin=2
             )
 
             data = np.array(data)
