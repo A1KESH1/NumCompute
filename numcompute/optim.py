@@ -1,7 +1,14 @@
+"""
+Finite-difference gradients and Jacobians for real-valued functions.
+"""
+
 import numpy as np
 
 
 def _validate_inputs(function, x, h, method):
+    """Validate callable, finite x (n,), positive h and difference method.
+    Returns (x copy, h); raises TypeError/ValueError. O(n) time/space.
+    """
     if not callable(function):
         raise TypeError("function must be callable.")
     x = np.array(x, dtype=float, copy=True)
@@ -23,6 +30,9 @@ def _validate_inputs(function, x, h, method):
 
 
 def _evaluate(function, x, shape):
+    """Evaluate a copied point and enforce a finite output of shape.
+    Returns a float array; raises ValueError on mismatch. O(C_f+n+m) time, O(n+m) space.
+    """
     value = np.asarray(function(x.copy()), dtype=float)
     if value.shape != shape:
         raise ValueError(f"Function output must have shape {shape}; got {value.shape}.")
@@ -32,6 +42,9 @@ def _evaluate(function, x, shape):
 
 
 def _perturb(x, i, h, direction):
+    """Copy x (n,) and shift coordinate i by direction*h.
+    Returns (n,); raises ValueError if the step is unrepresentable. O(n) time/space.
+    """
     point = x.copy()
     with np.errstate(over="ignore", invalid="ignore"):
         point[i] += direction * h
@@ -41,6 +54,15 @@ def _perturb(x, i, h, direction):
 
 
 def grad(f, x, h=1e-5, method="central"):
+    """Estimate the gradient using forward or central differences.
+
+    Args: f maps (n,) to a scalar; x is finite (n,); h > 0;
+        method is 'central' or 'forward'. Input x is not modified.
+    Returns: float array (n,). Central error O(h^2); forward O(h).
+    Raises: TypeError/ValueError for invalid inputs or non-finite outputs.
+    Cost: O(n*(C_f+n)) time, O(n) space, excluding f workspace.
+        Evaluations: n+1 forward or 2n+1 central, including validation.
+    """
     x, h = _validate_inputs(f, x, h, method)
     baseline = _evaluate(f, x, ())
     result = np.empty_like(x)
@@ -57,6 +79,15 @@ def grad(f, x, h=1e-5, method="central"):
 
 
 def jacobian(F, x, h=1e-5, method="central"):
+    """Estimate partial derivatives of a vector-valued function.
+
+    Args: F maps finite x (n,) to fixed (m,); h > 0;
+        method is 'central' or 'forward'. Input x is not modified.
+    Returns: float array (m,n); entry [j,i] is dF_j/dx_i.
+    Raises: TypeError/ValueError for invalid inputs or output shape/values.
+    Cost: O(n*(C_F+n+m)) time, O(m*n+n+m) space, excluding F workspace.
+        Evaluations: n+1 forward or 2n+1 central.
+    """
     x, h = _validate_inputs(F, x, h, method)
     baseline = np.asarray(F(x.copy()), dtype=float).copy()
     if baseline.ndim != 1 or not np.all(np.isfinite(baseline)):
