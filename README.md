@@ -95,6 +95,11 @@ NumCompute/
 │   └── test_benchmarking.py
 ├── demo/
 │   └── quickstart.ipynb
+├── benchmark/
+│   ├── run_benchmarks.py
+│   ├── results.json
+│   ├── results.md
+│   └── README.md
 ├── environment.yml
 ├── pyproject.toml
 └── README.md
@@ -254,7 +259,7 @@ outputs should be regenerated in the environment used for the final report.
 From the repository root:
 
 ```powershell
-python -m numcompute.benchmarking
+python benchmark/run_benchmarks.py
 ```
 
 The command checks numerical agreement before timing, performs one untimed
@@ -272,33 +277,35 @@ is excluded from timing; function calls and output allocation are included.
 Customise the workload:
 
 ```powershell
-python -m numcompute.benchmarking --n 100000 --distance-n 10000 --features 8 --repeat 7 --seed 42
+python benchmark/run_benchmarks.py --n 100000 --distance-n 10000 --features 8 --repeat 7 --seed 42
 ```
 
 Save raw timing samples and environment information:
 
 ```powershell
-python -m numcompute.benchmarking --output benchmark_results.json
+python benchmark/run_benchmarks.py --output benchmark/results.json
 ```
 
-The JSON contains Python/NumPy versions, platform, thread settings, NumPy build
-configuration, workload settings and per-run timing samples. The output file
-is created only when `--output` is specified. Use the table and JSON from the
-same run in the report. Speedups vary with hardware, input size and system load.
+`benchmark/results.json` contains Python/NumPy versions, platform, thread
+settings, NumPy build configuration, workload settings and per-run timing
+samples. `benchmark/results.md` contains the matching performance tables.
+Running the command again overwrites both files. Use results from the same
+run in the report. Speedups vary with hardware, input size and system load.
 
-### Example Performance Table
+### Performance Results
 
-The following is one team-provided run on Python 3.10.11, NumPy 2.2.6 and
-Windows, with the default workload, seed 42, five repeats and one warm-up.
-These are example measurements, not performance guarantees.
+Results are recorded in [benchmark/results.md](benchmark/results.md), with
+raw timing samples in [benchmark/results.json](benchmark/results.json).
+Measurements use Python 3.10.11, NumPy 2.2.6 and Windows, with float64 data,
+seed 42, five repeats and one warm-up per implementation.
 
 | Operation | Python loop mean (ms) | NumPy mean (ms) | Mean-time speedup |
 |---|---:|---:|---:|
-| Sum, 100,000 values | 4.5304 | 0.0199 | 227.66x |
-| Euclidean distances, 10,000 x 8 | 16.8035 | 0.8090 | 20.77x |
+| Sum, 100,000 values | 4.6493 | 0.0308 | 150.85x |
+| Euclidean distances, 10,000 x 8 | 16.4816 | 0.8639 | 19.08x |
 
-The printed times are rounded; speedups are calculated from unrounded means.
-Re-run the command and retain the matching JSON for the final measurements.
+Displayed times are rounded; speedups are calculated from unrounded means.
+Performance depends on hardware, input size and system load.
 
 ## Utility Boundary Policies
 
